@@ -47,7 +47,7 @@ public class InventoryClient {
                     .onStatus(HttpStatus.BAD_REQUEST::equals,
                             response -> response.bodyToMono(String.class)
                                     .flatMap(body -> Mono.error(new InventoryServiceException("Insufficient inventory: " + body))))
-                    .onStatus(HttpStatus::isError,
+                    .onStatus(x -> x.isError(),
                             response -> Mono.error(new InventoryServiceException("Inventory service error")))
                     .bodyToMono(InventoryUpdateResponse.class)
                     .timeout(Duration.ofSeconds(5))
